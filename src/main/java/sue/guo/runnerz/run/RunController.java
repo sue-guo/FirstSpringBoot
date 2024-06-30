@@ -1,11 +1,11 @@
 package sue.guo.runnerz.run;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 //handle rest request
 @RestController
@@ -20,14 +20,59 @@ public class RunController {
     }
 
 
+    /**
+     * Get all records
+     * @return
+     */
     @GetMapping("")
     List<Run> findAll(){
         return runRepository.findAll();
     }
 
+    /**
+     * Get one record by id
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}")
     Run findById(@PathVariable Integer id){
-        System.out.println("test");
-        return runRepository.findById(id);
+        Optional<Run> run = runRepository.findById(id);
+        if(run.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Could not find run with id "+id);
+        }
+
+        return run.get();
+    }
+
+    /**
+     *  Post method to add a new record
+     * @param run
+     */
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("")
+    void add(@RequestBody Run run){
+        runRepository.save(run);
+
+    }
+
+    /**
+     *  Put method for update run
+     * @param run
+     * @param id
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{id}")
+    void update(@RequestBody Run run, @PathVariable Integer id){
+        runRepository.update(run,id);
+    }
+
+    /**
+     *  Delete method to remove a run from list
+     * @param id
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    void delete(@PathVariable Integer id){
+        runRepository.delete(id);
     }
 }

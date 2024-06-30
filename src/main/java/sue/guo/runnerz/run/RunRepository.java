@@ -7,12 +7,17 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class RunRepository {
 
     private List<Run> runs = new ArrayList<>();
 
+    /**
+     * Get all record from list
+     * @return
+     */
     List<Run> findAll(){
         System.out.println(runs.size());
         return runs;
@@ -45,7 +50,35 @@ public class RunRepository {
         System.out.println(runs.size());
     }
 
-    Run findById(Integer id) {
-        return runs.stream().filter(run -> run.id().equals(id)).findFirst().get();
+    Optional<Run> findById(Integer id) {
+        return runs.stream().filter(run -> run.id().equals(id)).findFirst();
+    }
+
+    /**
+     * add a new run
+     * @param run
+     */
+    void save(Run run) {
+        runs.add(run);
+    }
+
+    /**
+     * Update the value of Run
+     * @param run run to update
+     * @param id id that going to update
+     */
+    void update(Run run, Integer id) {
+        Optional<Run> existingrun = findById(id);
+        if(existingrun.isPresent()){
+            runs.set(runs.indexOf(existingrun.get()),run);
+        }
+    }
+
+    /**
+     * Delete run from list
+     * @param id
+     */
+    void delete(Integer id) {
+        runs.removeIf(run -> run.id().equals(id));
     }
 }
