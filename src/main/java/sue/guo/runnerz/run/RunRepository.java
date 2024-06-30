@@ -14,12 +14,14 @@ public class RunRepository {
     private List<Run> runs = new ArrayList<>();
 
     List<Run> findAll(){
+        System.out.println(runs.size());
         return runs;
     }
 
-    //This method will be executed after all dependency injection is done
+    //This annotation method means it will be executed after all dependency injection is done
     @PostConstruct
     private void init(){
+        System.out.println("init runs");
         runs.add(
                 new Run(
                         1,
@@ -40,6 +42,10 @@ public class RunRepository {
                         Location.OUTDOOR
                 )
         );
+        System.out.println(runs.size());
     }
 
+    Run findById(Integer id) {
+        return runs.stream().filter(run -> run.id().equals(id)).findFirst().get();
+    }
 }
