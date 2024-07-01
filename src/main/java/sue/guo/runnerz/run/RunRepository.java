@@ -19,7 +19,6 @@ public class RunRepository {
      * @return
      */
     List<Run> findAll(){
-        System.out.println(runs.size());
         return runs;
     }
 
