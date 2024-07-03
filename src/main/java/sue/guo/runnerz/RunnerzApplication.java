@@ -20,15 +20,15 @@ public class RunnerzApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RunnerzApplication.class, args);
-//		log.info("Starting RunnerzApplication!!!!");
+		log.info("Starting RunnerzApplication!!!!");
 	}
 
-	@Bean
-	CommandLineRunner runner(){
-		return args -> {
-			Run run = new Run(1,"First Run", LocalDateTime.now(),LocalDateTime.now().plus(1, ChronoUnit.HOURS),5, Location.OUTDOOR);
-            //{} placeholder by calling its toString() method to get a string representation
-			log.info("Run: {}", run);
-		};
-	}
+//		@Bean
+//		CommandLineRunner runner(){
+//			return args -> {
+//				Run run = new Run(1,"First Run", LocalDateTime.now(),LocalDateTime.now().plus(1, ChronoUnit.HOURS),5, Location.OUTDOOR);
+//				//{} placeholder by calling its toString() method to get a string representation
+//				log.info("Run: {}", run);
+//			};
+//		}
 }

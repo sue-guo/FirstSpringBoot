@@ -79,4 +79,9 @@ public class RunRepository {
                 .param(4,run.miles()).param(5, run.location()).param(6,id).update();
         Assert.state(updated == 1,"Failed to update run.");
     }
+
+    public Integer count() {
+        Integer count = jdbcClient.sql("select count(*) from run").query(Integer.class).single();
+        return count;
+    }
 }
