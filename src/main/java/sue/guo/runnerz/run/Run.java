@@ -14,12 +14,12 @@ public record Run(
         LocalDateTime completeedOn,
         @Positive
         Integer miles,
-        Location loaction
+        Location location
 ) {
     // validation
-    public Run{
-        if(!completeedOn().isAfter(startedOn())){
-            throw new IllegalArgumentException("Started on cannot be after completed on");
-        }
-    }
+//    public Run{
+//        if(!completeedOn().isAfter(startedOn())){
+//            throw new IllegalArgumentException("Started on cannot be after completed on");
+//        }
+//    }
 }

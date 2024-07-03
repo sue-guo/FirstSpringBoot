@@ -1,0 +1,40 @@
+###Get all
+GET  http://localhost:8080/api/runs
+
+
+###Get by id
+GET http://localhost:8080/api/runs/1
+
+###Get by id that doesn't exist
+GET http://localhost:8080/api/runs/99
+
+### craete new run
+POST http://localhost:8080/api/runs
+Content-Type: application/json
+
+{
+        "id": 3,
+        "title": "Friday",
+        "startedOn": "2024-06-30T11:35:55.7426649",
+        "completeedOn": "2024-06-30T12:15:36.241068",
+        "miles": 5,
+        "location": "INDOOR"
+    }
+
+### update a run
+PUT http://localhost:8080/api/runs/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "Monday",
+  "startedOn": "2024-06-30T11:15:36.241068",
+  "completeedOn": "2024-06-30T12:15:36.241068",
+  "miles": 6666,
+  "location": "INDOOR"
+}
+
+###
+DELETE http://localhost:8080/api/runs/3
+
+

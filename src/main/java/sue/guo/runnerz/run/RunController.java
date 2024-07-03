@@ -27,7 +27,7 @@ public class RunController {
      */
     @GetMapping("")
     List<Run> findAll(){
-        return runRepository.findAll();
+        return runRepository.getAll();
     }
 
     /**
@@ -37,7 +37,7 @@ public class RunController {
      */
     @GetMapping("/{id}")
     Run findById(@PathVariable Integer id){
-        Optional<Run> run = runRepository.findById(id);
+        Optional<Run> run = runRepository.getById(id);
         if(run.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Could not find run with id "+id);
         }
@@ -52,7 +52,7 @@ public class RunController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
     void add(@RequestBody Run run){
-        runRepository.save(run);
+        runRepository.create(run);
 
     }
 

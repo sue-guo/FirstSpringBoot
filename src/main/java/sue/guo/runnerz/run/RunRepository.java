@@ -1,7 +1,12 @@
 package sue.guo.runnerz.run;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.constraints.AssertFalse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -12,72 +17,66 @@ import java.util.Optional;
 @Repository
 public class RunRepository {
 
-    private List<Run> runs = new ArrayList<>();
+    private static final Logger logger = LoggerFactory.getLogger(RunRepository.class.getName());
+    private final JdbcClient jdbcClient;
+
+    public RunRepository(JdbcClient jdbcClient){
+        this.jdbcClient = jdbcClient;
+    }
 
     /**
-     * Get all record from list
+     *  Get all
      * @return
      */
-    List<Run> findAll(){
-        return runs;
-    }
-
-    //This annotation method means it will be executed after all dependency injection is done
-    @PostConstruct
-    private void init(){
-        System.out.println("init runs");
-        runs.add(
-                new Run(
-                        1,
-                        "Monday",
-                        LocalDateTime.now(),
-                        LocalDateTime.now().plus(1, ChronoUnit.HOURS),
-                        6,
-                        Location.INDOOR
-                )
-        );
-        runs.add(
-                new Run(
-                        2,
-                        "Tuseday",
-                        LocalDateTime.now(),
-                        LocalDateTime.now().plus(1, ChronoUnit.HOURS),
-                        8,
-                        Location.OUTDOOR
-                )
-        );
-        System.out.println(runs.size());
-    }
-
-    Optional<Run> findById(Integer id) {
-        return runs.stream().filter(run -> run.id().equals(id)).findFirst();
+    public List<Run> getAll(){
+        return jdbcClient.sql(" select id, title, started_on as startedOn, completed_on as completeedOn, miles, location from run ").query(Run.class).list();
     }
 
     /**
-     * add a new run
+     * Get by id
+     * @param id
+     * @return
+     */
+    public Optional<Run> getById(Integer id){
+        return jdbcClient.sql("select id, title, started_on as startedOn, completed_on as completeedOn, miles, location from run where id = ?").param(1,id).query(Run.class).optional();
+    }
+
+    /**
+     * create new one
      * @param run
      */
-    void save(Run run) {
-        runs.add(run);
+    public void create(Run run){
+        var updated = jdbcClient.sql("INSERT INTO run (id, title, started_on, completed_on, miles, location) values (?,?,?,?,?,?)")
+                .param(1,run.id())
+                .param(2,run.title())
+                .param(3,run.startedOn())
+                .param(4,run.completeedOn())
+                .param(5,run.miles())
+                .param(6,run.location().toString())
+                .update();
+        Assert.state(updated == 1,"Failed to create run.");
     }
 
     /**
-     * Update the value of Run
-     * @param run run to update
-     * @param id id that going to update
-     */
-    void update(Run run, Integer id) {
-        Optional<Run> existingrun = findById(id);
-        if(existingrun.isPresent()){
-            runs.set(runs.indexOf(existingrun.get()),run);
-        }
-    }
-
-    /**
-     * Delete run from list
+     *  delete by id
      * @param id
      */
-    void delete(Integer id) {
-        runs.removeIf(run -> run.id().equals(id));
+    public void delete(Integer id){
+        var updated = jdbcClient.sql("delete from run where id = ?").param(1, id).update();
+
+        Assert.state(updated == 1,"Failed to delete run.");
+    }
+
+
+    /**
+     *  update a tun
+     * @param run
+     * @param id
+     */
+    public void update(Run run, Integer id) {
+        var updated = jdbcClient.sql("UPDATE run set title = ?,started_on = ?, completed_on= ?,miles=?,location=? where id = ? ")
+                .param(1,run.title()).param(2,run.startedOn()).param(3,run.completeedOn())
+                .param(4,run.miles()).param(5, run.location()).param(6,id).update();
+        Assert.state(updated == 1,"Failed to update run.");
     }
 }
